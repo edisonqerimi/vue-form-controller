@@ -2,8 +2,10 @@ import { computed, readonly, ref, type Ref } from "vue";
 
 import { get, isEqual, set, unset } from "lodash";
 import {
+  Control,
   ControlRule,
   ControlRules,
+  CreateControl,
   DeepIndex,
   FieldError,
   GetKeys,
@@ -14,7 +16,7 @@ import { getFieldErrors } from "../validations";
 
 export const useForm = <T>(props?: UseFormProps<T>) => {
   // @ts-expect-error UnwrapRef issue
-  const control: Ref<CreateControlReturnType<T>> = ref(
+  const control: Ref<CreateControl<T>> = ref(
     createControl(props?.defaultValues, props?.reValidateMode || "onSubmit")
   );
 
@@ -148,7 +150,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
       validateField,
       getIsDirty,
       unregister,
-    },
+    } as Control<T>,
     handleSubmit,
     isSubmitting,
     isDirty,

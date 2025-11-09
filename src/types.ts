@@ -35,9 +35,12 @@ export type CreateControl<T> = {
 };
 
 export type ControlFunctionsType<T> = {
-  setValue: <P extends GetKeys<T>>(name: P, value: DeepIndex<T, P>) => void;
+  setValue: <P extends GetKeys<T> = GetKeys<T>>(
+    name: P,
+    value: DeepIndex<T, P>
+  ) => void;
   setValues: (values?: T) => void;
-  getValue: <P extends GetKeys<T>>(name: P) => DeepIndex<T, P>;
+  getValue: <P extends GetKeys<T> = GetKeys<T>>(name: P) => DeepIndex<T, P>;
   clearError: (name: GetKeys<T>) => void;
   setError: (name: GetKeys<T>, error: string[]) => void;
   setErrors: (errors: FieldError<T>) => void;
@@ -75,7 +78,7 @@ export type ControlRule<T> = {
 
 export type FieldError<T> = Partial<Record<GetKeys<T>, string[]>>;
 
-export type ControllerProps<T, P extends GetKeys<T> = any> = {
+export type ControllerProps<T, P extends GetKeys<T> = GetKeys<T>> = {
   control: Control<T>;
   name: P;
   rules?: ControlRule<T>;
