@@ -1,6 +1,6 @@
 export { useController } from "./composables/controller";
 export { useForm } from "./composables/form";
-export * from "./components/Controller.vue";
+import Controller from "./components/Controller.vue";
 
 export type {
   ValidationMode,
@@ -13,3 +13,5 @@ export type {
   GetKeys,
   DeepIndex,
 } from "./types";
+
+export { Controller };
