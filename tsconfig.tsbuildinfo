@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/types.ts","./src/composables/controller.ts","./src/composables/form.ts","./src/control/index.ts","./src/validations/index.ts","./src/components/controller.vue"],"version":"5.9.3"}
