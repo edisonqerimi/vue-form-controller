@@ -6,6 +6,7 @@ export const useController = <T, P extends GetKeys<T>>({
   control,
   name,
   shouldUnregister,
+  shouldClearErrorOnFocus = true,
 }: ControllerProps<T, P>) => {
   const value = computed(() => control.getValue(name));
   const isDirty = computed(() => control.getIsDirty(name));
@@ -35,6 +36,9 @@ export const useController = <T, P extends GetKeys<T>>({
   };
 
   const onFocus = () => {
+    if (!shouldClearErrorOnFocus) {
+      return;
+    }
     control.clearError(name);
   };
   const onBlur = () => {

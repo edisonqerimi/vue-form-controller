@@ -53,11 +53,11 @@ export type ControlFunctionsType<T> = {
   unregister: (name: GetKeys<T>) => void;
 };
 
-export type Control<T> = Record<
-  keyof CreateControl<T>,
-  ComputedRef<CreateControl<T>[keyof CreateControl<T>]>
-> &
-  ControlFunctionsType<T>;
+type Computed<T> = {
+  [K in keyof T]: ComputedRef<T[K]>;
+};
+
+export type Control<T> = Computed<CreateControl<T>> & ControlFunctionsType<T>;
 
 export type ValidationMode = "onBlur" | "onChange" | "onSubmit" | "all";
 
@@ -83,4 +83,5 @@ export type ControllerProps<T, P extends GetKeys<T> = GetKeys<T>> = {
   name: P;
   rules?: ControlRule<T>;
   shouldUnregister?: boolean;
+  shouldClearErrorOnFocus?: boolean;
 };

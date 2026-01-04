@@ -14,7 +14,9 @@
 import type { GetKeys, ControllerProps } from "../types";
 import { useController } from "../composables/controller";
 
-const props = defineProps<ControllerProps<T, P>>();
+const props = withDefaults(defineProps<ControllerProps<T, P>>(), {
+  shouldClearErrorOnFocus: true,
+});
 const { onChange, onBlur, onFocus, errors, hasErrors, value, isDirty } =
   useController(props);
 </script>

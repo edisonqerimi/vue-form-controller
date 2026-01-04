@@ -30,13 +30,16 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
     Object.keys(rules ?? {}).forEach((key) => {
       const name = key as GetKeys<T>;
       const errors = getCurrentFieldErrors(name);
-      controlErrors[name] = errors;
+
       if (errors.length) {
+        controlErrors[name] = errors;
         hasErrors = true;
       }
     });
+
+    setErrors(controlErrors);
+
     if (hasErrors) {
-      setErrors(controlErrors);
       return;
     }
     try {
