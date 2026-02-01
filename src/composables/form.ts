@@ -87,14 +87,14 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   const getError = (name: GetKeys<T>) => get(control.value.fieldErrors, name);
 
   const getRule = (name: GetKeys<T>) =>
-    get(control.value.rules, name) as ControlRule<T>;
+    control.value.rules[name] as ControlRule<T>;
 
   const setRules = (rules: ControlRules<T>) => {
     control.value.rules = rules;
   };
 
   const setRule = (name: GetKeys<T>, rules: ControlRule<T>) => {
-    set(control.value.rules, name, rules);
+    control.value.rules[name] = rules;
   };
 
   const unregister = (name: GetKeys<T>) => {
