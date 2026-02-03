@@ -16,6 +16,7 @@ import { useController } from "../composables/controller";
 
 const props = withDefaults(defineProps<ControllerProps<T, P>>(), {
   shouldClearErrorOnFocus: true,
+  shouldUnregisterRule: true,
 });
 const { onChange, onBlur, onFocus, errors, hasErrors, value, isDirty } =
   useController(props);

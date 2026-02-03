@@ -7,6 +7,7 @@ export const useController = <T, P extends GetKeys<T>>({
   name,
   shouldUnregister,
   shouldClearErrorOnFocus = true,
+  shouldUnregisterRule = true,
 }: ControllerProps<T, P>) => {
   const value = computed(() => control.getValue(name));
   const isDirty = computed(() => control.getIsDirty(name));
@@ -28,6 +29,9 @@ export const useController = <T, P extends GetKeys<T>>({
   onUnmounted(() => {
     if (shouldUnregister) {
       control.unregister(name);
+    }
+    if (shouldUnregisterRule) {
+      control.setRule(name, {});
     }
   });
 

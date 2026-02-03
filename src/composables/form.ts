@@ -64,10 +64,6 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
     }
   };
 
-  const setValues = (values?: T) => {
-    control.value.formValues = values ?? ({} as T);
-  };
-
   const getValue = <P extends GetKeys<T>>(name: P) => {
     return get(control.value.formValues, name) as DeepIndex<T, P>;
   };
@@ -98,7 +94,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   };
 
   const unregister = (name: GetKeys<T>) => {
-    unset(control.value.formValues as object, name);
+    unset(control.value.formValues, name);
   };
 
   const getIsDirty = (name: GetKeys<T>) =>
@@ -125,7 +121,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   );
 
   const getCurrentFieldErrors = (name: GetKeys<T>) =>
-    getFieldErrors(getValue(name), getRule(name));
+    getFieldErrors(getValue(name), getRule(name), formValues.value as T);
 
   const validateField = (name: GetKeys<T>) => {
     const errors = getCurrentFieldErrors(name);
@@ -136,7 +132,6 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   return {
     control: {
       setValue,
-      setValues,
       getValue,
       clearError,
       setError,

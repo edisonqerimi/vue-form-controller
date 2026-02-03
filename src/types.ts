@@ -39,7 +39,6 @@ export type ControlFunctionsType<T> = {
     name: P,
     value: DeepIndex<T, P>
   ) => void;
-  setValues: (values?: T) => void;
   getValue: <P extends GetKeys<T> = GetKeys<T>>(name: P) => DeepIndex<T, P>;
   clearError: (name: GetKeys<T>) => void;
   setError: (name: GetKeys<T>, error: string[]) => void;
@@ -84,4 +83,5 @@ export type ControllerProps<T, P extends GetKeys<T> = GetKeys<T>> = {
   rules?: ControlRule<T>;
   shouldUnregister?: boolean;
   shouldClearErrorOnFocus?: boolean;
+  shouldUnregisterRule?: boolean;
 };
