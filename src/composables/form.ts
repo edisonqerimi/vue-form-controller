@@ -22,7 +22,10 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
 
   const isSubmitting = ref(false);
 
-  const handleSubmit = async (onSubmit: (data: T) => void | Promise<void>) => {
+  const handleSubmit = async (
+    onSubmit: (data: T) => void | Promise<void>,
+    onError?: (errors: FieldError<T>) => void | Promise<void>
+  ) => {
     const rules = control.value.rules;
     const fieldValues = formValues.value as T;
     const controlErrors: FieldError<T> = {};
@@ -40,6 +43,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
     setErrors(controlErrors);
 
     if (hasErrors) {
+      onError?.(controlErrors);
       return;
     }
     try {
@@ -69,18 +73,18 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   };
 
   const clearError = (name: GetKeys<T>) => {
-    set(control.value.fieldErrors, name, []);
+    control.value.fieldErrors[name] = [];
   };
 
   const setError = (name: GetKeys<T>, error: string[]) => {
-    set(control.value.fieldErrors, name, error);
+    control.value.fieldErrors[name] = error;
   };
 
   const setErrors = (errors: FieldError<T>) => {
     control.value.fieldErrors = errors;
   };
 
-  const getError = (name: GetKeys<T>) => get(control.value.fieldErrors, name);
+  const getError = (name: GetKeys<T>) => control.value.fieldErrors[name];
 
   const getRule = (name: GetKeys<T>) =>
     control.value.rules[name] as ControlRule<T>;
