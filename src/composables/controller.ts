@@ -1,5 +1,5 @@
-import { computed, onUnmounted, watch } from "vue";
-import { ControllerProps, DeepIndex, GetKeys } from "../types";
+import { computed, onMounted, onUnmounted, watch } from "vue";
+import { ControllerProps, ControlRule, DeepIndex, GetKeys } from "../types";
 
 export const useController = <T, P extends GetKeys<T>>({
   rules,
@@ -15,16 +15,23 @@ export const useController = <T, P extends GetKeys<T>>({
   const reValidateMode = computed(() => control.reValidateMode.value);
   const hasErrors = computed(() => !!errors.value?.length);
 
+  const setRule = (rules: ControlRule<T> | undefined) => {
+    if (rules === undefined) {
+      return;
+    }
+    control.setRule(name, rules);
+  };
+
   watch(
     () => rules,
     () => {
-      if (rules === undefined) {
-        return;
-      }
-      control.setRule(name, rules);
-    },
-    { immediate: true }
+      setRule(rules);
+    }
   );
+
+  onMounted(() => {
+    setRule(rules);
+  });
 
   onUnmounted(() => {
     if (shouldUnregister) {
@@ -45,11 +52,13 @@ export const useController = <T, P extends GetKeys<T>>({
     }
     control.clearError(name);
   };
+
   const onBlur = () => {
     if (reValidateMode.value === "all" || reValidateMode.value === "onBlur") {
       control.validateField(name);
     }
   };
+
   return {
     value,
     errors,
