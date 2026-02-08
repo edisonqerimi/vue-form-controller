@@ -1,30 +1,47 @@
 import { ComputedRef } from "vue";
 
-type StopTypes = number | string | boolean | symbol | bigint | Date;
+type StopTypes =
+  | null
+  | undefined
+  | string
+  | number
+  | boolean
+  | symbol
+  | bigint
+  | Date
+  | RegExp;
 
-type ExcludedTypes = (...args: any[]) => any;
-
-type Dot<T extends string, U extends string> = "" extends U ? T : `${T}.${U}`;
+type PathMapping<T> = {
+  [K in keyof T & (string | number) as T[K] extends Function
+    ? never
+    : K]: T[K] extends StopTypes ? `${K}` : `${K}` | `${K}.${GetKeys<T[K]>}`;
+};
 
 export type GetKeys<T> = T extends StopTypes
-  ? ""
-  : T extends readonly unknown[]
-  ? GetKeys<T[number]>
-  : {
-      [K in keyof T & string]: T[K] extends StopTypes
-        ? K
-        : T[K] extends ExcludedTypes
-        ? never
-        : K | Dot<K, GetKeys<T[K]>>;
-    }[keyof T & string];
-
-type Idx<T, K extends string> = K extends keyof T ? T[K] : never;
-
-export type DeepIndex<T, K extends string> = T extends object
-  ? K extends `${infer F}.${infer R}`
-    ? DeepIndex<Idx<T, F>, R>
-    : Idx<T, K>
+  ? never
+  : T extends (infer U)[]
+  ?
+      | `${number}`
+      | `${number}.${GetKeys<U>}`
+      | `[${number}]`
+      | `[${number}].${GetKeys<U>}`
+  : T extends object
+  ? PathMapping<T>[keyof PathMapping<T>]
   : never;
+
+type GetType<T, K extends string> = T extends (infer U)[]
+  ? K extends `${number}` | `[${number}]`
+    ? U
+    : never
+  : K extends keyof T
+  ? T[K]
+  : never;
+
+export type DeepIndex<T, K extends string> = T extends StopTypes
+  ? never
+  : K extends `${infer F}.${infer R}`
+  ? DeepIndex<GetType<T, F>, R>
+  : GetType<T, K>;
 
 export type CreateControl<T> = {
   defaultValues: T;

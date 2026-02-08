@@ -15,10 +15,9 @@ import { createControl } from "../control";
 import { getFieldErrors } from "../validations";
 
 export const useForm = <T>(props?: UseFormProps<T>) => {
-  // @ts-expect-error UnwrapRef issue
   const control: Ref<CreateControl<T>> = ref(
     createControl(props?.defaultValues, props?.reValidateMode || "onSubmit")
-  );
+  ) as Ref<CreateControl<T>>;
 
   const isSubmitting = ref(false);
 
@@ -104,7 +103,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   const getIsDirty = (name: GetKeys<T>) =>
     getValue(name) !== get(control.value.defaultValues, name);
 
-  const readonlyControl = computed(() => readonly(control.value));
+  const readonlyControl = readonly(control);
   const reValidateMode = computed(() => readonlyControl.value.reValidateMode);
   const fieldErrors = computed(
     () => readonlyControl.value.fieldErrors as FieldError<T>
