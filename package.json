@@ -35,9 +35,9 @@
     "vue form controller"
   ],
   "bugs": {
-    "url": "https://github.com/edisonqerimi/vue-composable-form/issues"
+    "url": "https://github.com/edisonqerimi/vue-form-controller/issues"
   },
-  "homepage": "https://github.com/edisonqerimi/vue-composable-form#readme",
+  "homepage": "https://github.com/edisonqerimi/vue-form-controller#readme",
   "devDependencies": {
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.10.0",
