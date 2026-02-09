@@ -181,34 +181,6 @@ const { control, handleSubmit } = useForm<UserForm>({
 </template>
 ```
 
-### Arrays
-
-```vue
-<script setup lang="ts">
-interface TodoForm {
-  todos: string[];
-}
-
-const { control } = useForm<TodoForm>({
-  defaultValues: {
-    todos: [""],
-  },
-});
-</script>
-
-<template>
-  <Controller
-    v-for="(_, index) in control.formValues.value.todos"
-    :key="index"
-    :control="control"
-    :name="`todos.${index}`"
-    v-slot="{ value, onChange }"
-  >
-    <input :value="value" @input="onChange($event.target.value)" />
-  </Controller>
-</template>
-```
-
 ### Manual Control Operations
 
 ```typescript
