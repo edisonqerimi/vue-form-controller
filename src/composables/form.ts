@@ -83,10 +83,12 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
       (reValidateMode.value === "all" || reValidateMode.value === "onChange")
     ) {
       validateField(name);
-      const prefix = name + ".";
-      for (const key in control.value.rules) {
-        if (key.startsWith(prefix)) {
-          validateField(key as GetKeys<T>);
+      if (options?.deepValidate) {
+        const prefix = name + ".";
+        for (const key in control.value.rules) {
+          if (key.startsWith(prefix)) {
+            validateField(key as GetKeys<T>);
+          }
         }
       }
     }

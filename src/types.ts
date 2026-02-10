@@ -105,4 +105,5 @@ export type ControllerProps<T, P extends GetKeys<T> = GetKeys<T>> = {
 
 export type SetValueOptions = {
   shouldValidate?: boolean;
+  deepValidate?: boolean;
 };
