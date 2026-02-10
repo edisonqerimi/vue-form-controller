@@ -86,8 +86,9 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
       validateField(name);
       if (options?.deepValidate) {
         const prefix = name + ".";
+        const prefixForArray = name + "[";
         for (const key in control.value.rules) {
-          if (key.startsWith(prefix)) {
+          if (key.startsWith(prefix) || key.startsWith(prefixForArray)) {
             validateField(key as GetKeys<T>);
           }
         }
