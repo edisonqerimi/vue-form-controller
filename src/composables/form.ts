@@ -64,8 +64,9 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   const setValue = <P extends GetKeys<T>>(
     name: P,
     value: DeepIndex<T, P> | ((prev: DeepIndex<T, P>) => DeepIndex<T, P>),
-    options: SetValueOptions = { shouldValidate: true },
+    options?: SetValueOptions,
   ) => {
+    const shouldValidate = options?.shouldValidate ?? true;
     let newValue: DeepIndex<T, P>;
     if (typeof value === "function") {
       const prevValue = getValue(name);
@@ -79,7 +80,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
     set(control.value.formValues as object, name, newValue);
 
     if (
-      options?.shouldValidate &&
+      shouldValidate &&
       (reValidateMode.value === "all" || reValidateMode.value === "onChange")
     ) {
       validateField(name);
