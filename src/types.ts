@@ -64,6 +64,7 @@ export type ControlFunctionsType<T> = {
   getRule: (name: GetKeys<T>) => ControlRule<T> | undefined;
   setRules: (rules: ControlRules<T>) => void;
   setRule: (name: GetKeys<T>, rules: ControlRule<T>) => void;
+  clearRule: (name: GetKeys<T>) => void;
   validateField: (name: GetKeys<T>) => string[];
   getIsDirty: (name: GetKeys<T>) => boolean;
   unregister: (name: GetKeys<T>) => void;
@@ -105,5 +106,4 @@ export type ControllerProps<T, P extends GetKeys<T> = GetKeys<T>> = {
 
 export type SetValueOptions = {
   shouldValidate?: boolean;
-  deepValidate?: boolean;
 };

@@ -83,14 +83,6 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
       (reValidateMode.value === "all" || reValidateMode.value === "onChange")
     ) {
       validateField(name);
-      if (options?.deepValidate) {
-        const prefix = name + ".";
-        for (const key in control.value.rules) {
-          if (key.startsWith(prefix)) {
-            validateField(key as GetKeys<T>);
-          }
-        }
-      }
     }
   };
 
@@ -121,6 +113,10 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
 
   const setRule = (name: GetKeys<T>, rules: ControlRule<T>) => {
     control.value.rules[name] = rules;
+  };
+
+  const clearRule = (name: GetKeys<T>) => {
+    delete control.value.rules[name];
   };
 
   const unregister = (name: GetKeys<T>) => {
@@ -178,6 +174,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
       validateField,
       getIsDirty,
       unregister,
+      clearRule,
     } as Control<T>,
     handleSubmit,
     isSubmitting,

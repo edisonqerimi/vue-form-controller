@@ -38,7 +38,7 @@ export const useController = <T, P extends GetKeys<T>>({
       control.unregister(name);
     }
     if (shouldUnregisterRule) {
-      control.setRule(name, {});
+      control.clearRule(name);
     }
   });
 
