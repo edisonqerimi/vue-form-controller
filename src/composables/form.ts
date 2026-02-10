@@ -9,6 +9,7 @@ import {
   DeepIndex,
   FieldError,
   GetKeys,
+  SetValueOptions,
   UseFormProps,
 } from "../types";
 import { createControl } from "../control";
@@ -60,10 +61,34 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
       control.value.rules
     );
   };
-  const setValue = <P extends GetKeys<T>>(name: P, value: DeepIndex<T, P>) => {
-    set(control.value.formValues as object, name, value) as T;
-    if (reValidateMode.value === "all" || reValidateMode.value === "onChange") {
+  const setValue = <P extends GetKeys<T>>(
+    name: P,
+    value: DeepIndex<T, P> | ((prev: DeepIndex<T, P>) => DeepIndex<T, P>),
+    options: SetValueOptions = { shouldValidate: true }
+  ) => {
+    let newValue: DeepIndex<T, P>;
+    if (typeof value === "function") {
+      const prevValue = getValue(name);
+      newValue = (value as (prev: DeepIndex<T, P>) => DeepIndex<T, P>)(
+        prevValue
+      );
+    } else {
+      newValue = value as DeepIndex<T, P>;
+    }
+
+    set(control.value.formValues as object, name, newValue);
+
+    if (
+      options?.shouldValidate &&
+      (reValidateMode.value === "all" || reValidateMode.value === "onChange")
+    ) {
       validateField(name);
+      const prefix = name + ".";
+      for (const key in control.value.rules) {
+        if (key.startsWith(prefix)) {
+          validateField(key as GetKeys<T>);
+        }
+      }
     }
   };
 
@@ -101,7 +126,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   };
 
   const getIsDirty = (name: GetKeys<T>) =>
-    getValue(name) !== get(control.value.defaultValues, name);
+    !isEqual(getValue(name), get(control.value.defaultValues, name));
 
   const readonlyControl = readonly(control);
   const reValidateMode = computed(() => readonlyControl.value.reValidateMode);
