@@ -20,28 +20,28 @@ type PathMapping<T> = {
 export type GetKeys<T> = T extends StopTypes
   ? never
   : T extends (infer U)[]
-  ?
-      | `${number}`
-      | `${number}.${GetKeys<U>}`
-      | `[${number}]`
-      | `[${number}].${GetKeys<U>}`
-  : T extends object
-  ? PathMapping<T>[keyof PathMapping<T>]
-  : never;
+    ?
+        | `${number}`
+        | `${number}.${GetKeys<U>}`
+        | `[${number}]`
+        | `[${number}].${GetKeys<U>}`
+    : T extends object
+      ? PathMapping<T>[keyof PathMapping<T>]
+      : never;
 
 type GetType<T, K extends string> = T extends (infer U)[]
   ? K extends `${number}` | `[${number}]`
     ? U
     : never
   : K extends keyof T
-  ? T[K]
-  : never;
+    ? T[K]
+    : never;
 
 export type DeepIndex<T, K extends string> = T extends StopTypes
   ? never
   : K extends `${infer F}.${infer R}`
-  ? DeepIndex<GetType<T, F>, R>
-  : GetType<T, K>;
+    ? DeepIndex<GetType<T, F>, R>
+    : GetType<T, K>;
 
 export type CreateControl<T> = {
   defaultValues: T;
@@ -54,7 +54,7 @@ export type CreateControl<T> = {
 export type ControlFunctionsType<T> = {
   setValue: <P extends GetKeys<T> = GetKeys<T>>(
     name: P,
-    value: DeepIndex<T, P>
+    value: DeepIndex<T, P>,
   ) => void;
   getValue: <P extends GetKeys<T> = GetKeys<T>>(name: P) => DeepIndex<T, P>;
   clearError: (name: GetKeys<T>) => void;
@@ -106,4 +106,5 @@ export type ControllerProps<T, P extends GetKeys<T> = GetKeys<T>> = {
 
 export type SetValueOptions = {
   shouldValidate?: boolean;
+  deepValidate?: boolean;
 };
