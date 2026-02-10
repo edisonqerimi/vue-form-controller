@@ -55,6 +55,7 @@ export type ControlFunctionsType<T> = {
   setValue: <P extends GetKeys<T> = GetKeys<T>>(
     name: P,
     value: DeepIndex<T, P>,
+    options?: SetValueOptions,
   ) => void;
   getValue: <P extends GetKeys<T> = GetKeys<T>>(name: P) => DeepIndex<T, P>;
   clearError: (name: GetKeys<T>) => void;

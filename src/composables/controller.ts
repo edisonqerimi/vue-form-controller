@@ -1,5 +1,11 @@
 import { computed, onMounted, onUnmounted, watch } from "vue";
-import { ControllerProps, ControlRule, DeepIndex, GetKeys } from "../types";
+import {
+  ControllerProps,
+  ControlRule,
+  DeepIndex,
+  GetKeys,
+  SetValueOptions,
+} from "../types";
 
 export const useController = <T, P extends GetKeys<T>>({
   rules,
@@ -26,7 +32,7 @@ export const useController = <T, P extends GetKeys<T>>({
     () => rules,
     () => {
       setRule(rules);
-    }
+    },
   );
 
   onMounted(() => {
@@ -42,8 +48,8 @@ export const useController = <T, P extends GetKeys<T>>({
     }
   });
 
-  const onChange = (value: DeepIndex<T, P>) => {
-    control.setValue(name, value);
+  const onChange = (value: DeepIndex<T, P>, options?: SetValueOptions) => {
+    control.setValue(name, value, options);
   };
 
   const onFocus = () => {

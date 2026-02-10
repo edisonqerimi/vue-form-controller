@@ -1,7 +1,7 @@
 {
   "name": "vue-form-controller",
   "type": "module",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Vue Form Controller",
   "scripts": {
     "dev": "vite",
