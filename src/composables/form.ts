@@ -17,14 +17,14 @@ import { getFieldErrors } from "../validations";
 
 export const useForm = <T>(props?: UseFormProps<T>) => {
   const control: Ref<CreateControl<T>> = ref(
-    createControl(props?.defaultValues, props?.reValidateMode || "onSubmit")
+    createControl(props?.defaultValues, props?.reValidateMode || "onSubmit"),
   ) as Ref<CreateControl<T>>;
 
   const isSubmitting = ref(false);
 
   const handleSubmit = async (
     onSubmit: (data: T) => void | Promise<void>,
-    onError?: (errors: FieldError<T>) => void | Promise<void>
+    onError?: (errors: FieldError<T>) => void | Promise<void>,
   ) => {
     const rules = control.value.rules;
     const fieldValues = formValues.value as T;
@@ -58,19 +58,19 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
     control.value = createControl(
       defaultValues,
       props?.reValidateMode || "onSubmit",
-      control.value.rules
+      control.value.rules,
     );
   };
   const setValue = <P extends GetKeys<T>>(
     name: P,
     value: DeepIndex<T, P> | ((prev: DeepIndex<T, P>) => DeepIndex<T, P>),
-    options: SetValueOptions = { shouldValidate: true }
+    options: SetValueOptions = { shouldValidate: true },
   ) => {
     let newValue: DeepIndex<T, P>;
     if (typeof value === "function") {
       const prevValue = getValue(name);
       newValue = (value as (prev: DeepIndex<T, P>) => DeepIndex<T, P>)(
-        prevValue
+        prevValue,
       );
     } else {
       newValue = value as DeepIndex<T, P>;
@@ -91,7 +91,7 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   };
 
   const clearError = (name: GetKeys<T>) => {
-    control.value.fieldErrors[name] = [];
+    delete control.value.fieldErrors[name];
   };
 
   const setError = (name: GetKeys<T>, error: string[]) => {
@@ -129,21 +129,21 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
   const readonlyControl = readonly(control);
   const reValidateMode = computed(() => readonlyControl.value.reValidateMode);
   const fieldErrors = computed(
-    () => readonlyControl.value.fieldErrors as FieldError<T>
+    () => readonlyControl.value.fieldErrors as FieldError<T>,
   );
   const formValues = computed(() => readonlyControl.value.formValues);
   const defaultValues = computed(() => readonlyControl.value.defaultValues);
   const rules = computed(() => readonlyControl.value.rules);
 
   const isDirty = computed(
-    () => !isEqual(formValues.value, defaultValues.value)
+    () => !isEqual(formValues.value, defaultValues.value),
   );
 
   const isValid = computed(
     () =>
       !Object.entries(fieldErrors.value ?? {}).some(
-        ([, v]) => (v as string[])?.length
-      )
+        ([, v]) => (v as string[])?.length,
+      ),
   );
 
   const getCurrentFieldErrors = (name: GetKeys<T>) =>
@@ -151,6 +151,10 @@ export const useForm = <T>(props?: UseFormProps<T>) => {
 
   const validateField = (name: GetKeys<T>) => {
     const errors = getCurrentFieldErrors(name);
+    if (!errors?.length) {
+      clearError(name);
+      return [];
+    }
     setError(name, errors);
     return errors;
   };
