@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, watch } from "vue";
+import { computed, onMounted, onUnmounted, toRef, watch } from "vue";
 import {
   ControllerProps,
   ControlRule,
@@ -7,14 +7,19 @@ import {
   SetValueOptions,
 } from "../types";
 
-export const useController = <T, P extends GetKeys<T>>({
-  rules,
-  control,
-  name,
-  shouldUnregister,
-  shouldClearErrorOnFocus = true,
-  shouldUnregisterRule = true,
-}: ControllerProps<T, P>) => {
+export const useController = <T, P extends GetKeys<T>>(
+  props: ControllerProps<T, P>,
+) => {
+  const {
+    control,
+    name,
+    shouldUnregister,
+    shouldClearErrorOnFocus = true,
+    shouldUnregisterRule = true,
+  } = props;
+
+  const rulesRef = toRef(props, "rules");
+
   const value = computed(() => control.getValue(name));
   const isDirty = computed(() => control.getIsDirty(name));
   const errors = computed(() => control.getError(name));
@@ -29,14 +34,15 @@ export const useController = <T, P extends GetKeys<T>>({
   };
 
   watch(
-    () => rules,
-    () => {
-      setRule(rules);
+    rulesRef,
+    (newRules) => {
+      setRule(newRules);
     },
+    { deep: true },
   );
 
   onMounted(() => {
-    setRule(rules);
+    setRule(rulesRef.value);
   });
 
   onUnmounted(() => {
