@@ -524,7 +524,7 @@ Same as `useController` props above.
 
 ## Peer Dependencies
 
-- Vue 3.5.24 or higher
+- Vue 3.3.0 or higher
 
 ## License
 
