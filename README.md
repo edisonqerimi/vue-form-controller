@@ -106,7 +106,7 @@ interface ControlRule<T> {
   validate?: (
     // Custom validation function
     value: any,
-    fieldValues?: T
+    fieldValues?: T,
   ) => string[] | undefined;
 }
 ```
@@ -206,6 +206,81 @@ const isDirty = control.getIsDirty("email");
 
 // Unregister a field
 control.unregister("email");
+```
+
+### Deep Validation with `setValue`
+
+When updating a parent field, use `deepValidate: true` to automatically re-validate all nested child fields as well.
+
+```vue
+<script setup lang="ts">
+import { useForm, Controller } from "vue-form-controller";
+
+interface Address {
+  street: string;
+  city: string;
+  zipCode: string;
+}
+
+interface UserForm {
+  name: string;
+  address: Address;
+}
+
+const { control, handleSubmit, isValid } = useForm<UserForm>({
+  defaultValues: {
+    name: "",
+    address: { street: "", city: "", zipCode: "" },
+  },
+  reValidateMode: "onChange",
+});
+
+// Update the entire address object and validate all nested fields
+control.setValue(
+  "address",
+  { street: "123 Main St", city: "", zipCode: "0000" },
+  { shouldValidate: true, deepValidate: true },
+);
+// This will validate "address", "address.street", "address.city",
+// and "address.zipCode" — surfacing errors for any nested field
+// that has a registered rule (e.g. required, minLength, etc.)
+</script>
+
+<template>
+  <form @submit.prevent="handleSubmit((data) => console.log(data))">
+    <Controller
+      :control="control"
+      name="address.street"
+      :rules="{ required: true }"
+      v-slot="{ value, onChange, errors, hasErrors }"
+    >
+      <input :value="value" @input="onChange($event.target.value)" />
+      <span v-if="hasErrors">{{ errors[0] }}</span>
+    </Controller>
+
+    <Controller
+      :control="control"
+      name="address.city"
+      :rules="{ required: true }"
+      v-slot="{ value, onChange, errors, hasErrors }"
+    >
+      <input :value="value" @input="onChange($event.target.value)" />
+      <span v-if="hasErrors">{{ errors[0] }}</span>
+    </Controller>
+
+    <Controller
+      :control="control"
+      name="address.zipCode"
+      :rules="{ required: true, pattern: /^\d{5}$/ }"
+      v-slot="{ value, onChange, errors, hasErrors }"
+    >
+      <input :value="value" @input="onChange($event.target.value)" />
+      <span v-if="hasErrors">{{ errors[0] }}</span>
+    </Controller>
+
+    <button type="submit" :disabled="!isValid">Submit</button>
+  </form>
+</template>
 ```
 
 ### Dynamic Rules
@@ -322,20 +397,20 @@ control.setValue("profile.invalid", "value");
 
 The `control` object provides the following methods:
 
-| Method                   | Description                     |
-| ------------------------ | ------------------------------- |
-| `setValue(name, value)`  | Set a field value               |
-| `getValue(name)`         | Get a field value               |
-| `setError(name, errors)` | Set field errors                |
-| `clearError(name)`       | Clear field errors              |
-| `setErrors(errors)`      | Set multiple field errors       |
-| `getError(name)`         | Get field errors                |
-| `validateField(name)`    | Validate a specific field       |
-| `setRule(name, rule)`    | Set validation rule for a field |
-| `setRules(rules)`        | Set multiple validation rules   |
-| `getRule(name)`          | Get validation rule for a field |
-| `getIsDirty(name)`       | Check if field value changed    |
-| `unregister(name)`       | Remove field from form state    |
+| Method                            | Description                                                       |
+| --------------------------------- | ----------------------------------------------------------------- |
+| `setValue(name, value, options?)` | Set a field value (options: `{ shouldValidate?, deepValidate? }`) |
+| `getValue(name)`                  | Get a field value                                                 |
+| `setError(name, errors)`          | Set field errors                                                  |
+| `clearError(name)`                | Clear field errors                                                |
+| `setErrors(errors)`               | Set multiple field errors                                         |
+| `getError(name)`                  | Get field errors                                                  |
+| `validateField(name)`             | Validate a specific field                                         |
+| `setRule(name, rule)`             | Set validation rule for a field                                   |
+| `setRules(rules)`                 | Set multiple validation rules                                     |
+| `getRule(name)`                   | Get validation rule for a field                                   |
+| `getIsDirty(name)`                | Check if field value changed                                      |
+| `unregister(name)`                | Remove field from form state                                      |
 
 ## Error Messages
 
