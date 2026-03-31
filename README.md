@@ -25,6 +25,10 @@ yarn add vue-form-controller
 pnpm add vue-form-controller
 ```
 
+```bash
+bun add vue-form-controller
+```
+
 ## Quick Start
 
 ```vue
