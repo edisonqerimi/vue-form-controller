@@ -16,6 +16,7 @@ export const useController = <T, P extends GetKeys<T>>(
     shouldUnregister,
     shouldClearErrorOnFocus = true,
     shouldUnregisterRule = true,
+    shouldClearError = true,
   } = props;
 
   const rulesRef = toRef(props, "rules");
@@ -51,6 +52,9 @@ export const useController = <T, P extends GetKeys<T>>(
     }
     if (shouldUnregisterRule) {
       control.clearRule(name);
+    }
+    if (shouldClearError) {
+      control.clearError(name);
     }
   });
 

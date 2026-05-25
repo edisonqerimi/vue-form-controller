@@ -103,6 +103,7 @@ export type ControllerProps<T, P extends GetKeys<T> = GetKeys<T>> = {
   shouldUnregister?: boolean;
   shouldClearErrorOnFocus?: boolean;
   shouldUnregisterRule?: boolean;
+  shouldClearError?: boolean;
 };
 
 export type SetValueOptions = {

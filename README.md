@@ -483,6 +483,7 @@ interface ControllerProps<T, P extends GetKeys<T>> {
   shouldUnregister?: boolean;
   shouldClearErrorOnFocus?: boolean;
   shouldUnregisterRule?: boolean;
+  shouldClearError?: boolean;
 }
 ```
 
